@@ -29,7 +29,7 @@ body {
 }
 /*--------------- Select Box--------------- */
 .select-box {
-  width: 330px;
+  width: 300px;
   padding: 20px;
   border-radius: 6px;
   background: #fff;
@@ -140,7 +140,7 @@ button:hover {
 .result-box {
   padding: 25px 20px;
   border-radius: 7px;
-  max-width: 330px;
+  max-width: 300px;
   width: 100%;
   opacity: 0;
   text-align: center;
@@ -246,5 +246,17 @@ button:hover {
   to {
     transform: scale(20) rotate(960deg) translate(-50%, -50%);
     opacity: 0;
+  }
+}
+@media only screen and (max-height: 450px) and (orientation: landscape) {
+  body {
+    width: 100vw;
+    height: 150vw;
+    overflow: scroll;
+  }
+  .select-box,
+  .play-board,
+  .result-box {
+    top: 110%;
   }
 }
