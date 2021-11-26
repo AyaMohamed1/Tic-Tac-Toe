@@ -35,14 +35,14 @@ function onReplay() {
 function checkWinning(arr, player){
   var count = 0;
   // case 1:: vertical
-  console.log("******************case1 started****************");
+  // console.log("******************case1 started****************");
   for(var i = 0; i < 3; i++){
       for(var j = 0; j < 3; j++){
           
           if(arr[j][i] == player){
               count++;
           }
-          console.log("[" + i + "][" + j + "] = " + arr[j][i] + ", count =  " + count + "*");
+          // console.log("[" + i + "][" + j + "] = " + arr[j][i] + ", count =  " + count + "*");
       }
       if(count == 3){
           return true;
@@ -50,10 +50,10 @@ function checkWinning(arr, player){
       else{
           count = 0;
       }
-      console.log("\n");
+      // console.log("\n");
   }
 
-  console.log("******************case2 started****************");
+  // console.log("******************case2 started****************");
 
 
   // case 2:: horizontal
@@ -63,7 +63,7 @@ function checkWinning(arr, player){
           if(arr[i][j] == player){
               count++;
           }
-          console.log("[" + i + "][" + j + "] = " + arr[i][j] + ", count =  " + count + "**");
+          // console.log("[" + i + "][" + j + "] = " + arr[i][j] + ", count =  " + count + "**");
       }
       if(count == 3){
           return true;
@@ -71,22 +71,22 @@ function checkWinning(arr, player){
       else{
           count = 0;
       }
-      console.log("\n");
+      // console.log("\n");
   }
 
-  console.log("******************case3 started****************");
+  // console.log("******************case3 started****************");
 
 
   // case 3:: vertical
   if(arr[1][1] == player){
       // left to right
       if(arr[0][0] == player && arr[2][2] == player){
-          console.log("left to right")
+          // console.log("left to right")
           return true;
       }
       // right to left
       else if(arr[0][2] == player && arr[2][0] == player){
-          console.log("right to left");
+          // console.log("right to left");
           return true;
       }
   }
