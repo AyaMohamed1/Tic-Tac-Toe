@@ -9,7 +9,7 @@
   </head>
   <body>
     <!-------- Select Box ------->
-    <
+    
     <div class="select-box" id="select-box">
       <p class="header">Tic-Tac-Toc</p>
       <div class="content">
@@ -23,7 +23,7 @@
 
     <!-------- playboard section ------>
 
-    <div class="play-board" id="play-board" onclick="onWin()">
+    <div class="play-board" id="play-board">
       <div class="details">
         <div class="players">
           <span id="Xturn" class="active">X's Turn</span>
@@ -32,19 +32,19 @@
       </div>
       <div class="play-area">
         <section>
-          <span id="box1"></span>
-          <span id="box2"></span>
-          <span id="box3"></span>
+          <span id="box1" onclick="checkNewValue(this)">X</span>
+          <span id="box2" onclick="checkNewValue(this)">O</span>
+          <span id="box3" onclick="checkNewValue(this)">X</span>
         </section>
         <section>
-          <span id="box4"></span>
-          <span id="box5"></span>
-          <span id="box6"></span>
+          <span id="box4" onclick="checkNewValue(this)">O</span>
+          <span id="box5" onclick="checkNewValue(this)">O</span>
+          <span id="box6" onclick="checkNewValue(this)">O</span>
         </section>
         <section>
-          <span id="box7"></span>
-          <span id="box8"></span>
-          <span id="box9"></span>
+          <span id="box7" onclick="checkNewValue(this)">X</span>
+          <span id="box8" onclick="checkNewValue(this)">X</span>
+          <span id="box9" onclick="checkNewValue(this)"></span>
         </section>
       </div>
     </div>
@@ -52,7 +52,7 @@
     <!----------- result box -------->
 
     <div class="result-box" id="result-box">
-      <div class="won-text">Player <span id="winner"> X </span>&nbsp;Win!</div>
+      <div class="won-text">Player <span id="winner"></span>&nbsp;Win!</div>
       <div class="btn" onclick="onReplay()"><button>Play again</button></div>
     </div>
 
