@@ -4,7 +4,7 @@ xTurn = document.getElementById("Xturn");
 oTurn = document.getElementById("Oturn");
 
 // if x --> 1, if o --> 0
-var player = 1;
+var player;
 
 // count busy cells
 var notAvailable = 0;
@@ -18,11 +18,13 @@ function playerX() {
   selectBox.classList.add("hide");
   playBoard.classList.add("show");
   xTurn.classList.add("active");
+  player = 1;
 }
 function playerY() {
   selectBox.classList.add("hide");
   playBoard.classList.add("show");
   oTurn.classList.add("active");
+  player = 0;
 }
 function playArea(cell) {
   var Val = document.getElementById(cell.id);
