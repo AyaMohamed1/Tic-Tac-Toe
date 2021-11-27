@@ -1,3 +1,8 @@
+selectBox = document.querySelector(".select-box");
+playBoard = document.querySelector(".play-board");
+xTurn = document.getElementById("Xturn");
+oTurn = document.getElementById("Oturn");
+
 // if x --> 1, if o --> 0
 var player = 1;
 
@@ -8,6 +13,33 @@ var arr = [
   [-1,-1,-1],
   [-1,-1,-1]
 ]
+
+function playerX() {
+  selectBox.classList.add("hide");
+  playBoard.classList.add("show");
+  xTurn.classList.add("active");
+}
+function playerY() {
+  selectBox.classList.add("hide");
+  playBoard.classList.add("show");
+  oTurn.classList.add("active");
+}
+function playArea(cell) {
+  var Val = document.getElementById(cell.id);
+  if (xTurn.classList.contains("active") == true && Val.innerHTML == "") {
+    document.getElementById(cell.id).innerHTML = "X";
+    xTurn.classList.remove("active");
+    oTurn.classList.add("active");
+  } else if (
+    !xTurn.classList.contains("active") == true &&
+    Val.innerHTML == ""
+  ) {
+    document.getElementById(cell.id).innerHTML = "O";
+    oTurn.classList.remove("active");
+    xTurn.classList.add("active");
+  }
+  checkNewValue(cell);
+}
 
 function onX() {
   document.getElementById("select-box").classList.add("hide");
@@ -34,12 +66,12 @@ function onReplay() {
 
 function checkWinning(arr, player){
   var count = 0;
-  // case 1:: vertical
+  // case 1:: horizontal
   // console.log("******************case1 started****************");
-  for(var i = 0; i < 3; i++){
-      for(var j = 0; j < 3; j++){
+  for(var row = 0; row < 3; row++){
+      for(var col = 0; col < 3; col++){
           
-          if(arr[j][i] == player){
+          if(arr[col][row] == player){
               count++;
           }
           // console.log("[" + i + "][" + j + "] = " + arr[j][i] + ", count =  " + count + "*");
@@ -56,11 +88,11 @@ function checkWinning(arr, player){
   // console.log("******************case2 started****************");
 
 
-  // case 2:: horizontal
-  for(var i = 0; i < 3; i++){
-      for(var j = 0; j < 3; j++){
+  // case 2:: vertical
+  for(var row = 0; row < 3; row++){
+      for(var col = 0; col < 3; col++){
           
-          if(arr[i][j] == player){
+          if(arr[row][col] == player){
               count++;
           }
           // console.log("[" + i + "][" + j + "] = " + arr[i][j] + ", count =  " + count + "**");
@@ -77,7 +109,7 @@ function checkWinning(arr, player){
   // console.log("******************case3 started****************");
 
 
-  // case 3:: vertical
+  // case 3:: diagonal
   if(arr[1][1] == player){
       // left to right
       if(arr[0][0] == player && arr[2][2] == player){
@@ -95,6 +127,30 @@ function checkWinning(arr, player){
   return false;
 }
 
+function mapIdCellToArray(cellId, cellValue){
+  // cell value not null
+  if(cellValue != ""){
+    var arrValue = (cellValue == "X")? 1 : 0;
+    var cellI = parseInt(cellId / 3);
+    var cellJ = parseInt(cellId % 3);
+    console.log(arrValue + " ij: " + cellI + " " + cellJ);
+    arr[cellI][cellJ] = arrValue;
+    for(var i = 0; i < 3; i++){
+      for(var j = 0; j < 3; j++){
+        console.log(i + "," + j + ": "+ arr[i][j] + " ");
+      }
+      console.log();
+    }
+    console.log("***********************************");
+  }
+}
+
+function clearBoard(){
+  for(var i = 1; i <= 9; i++){
+    var boxId = "box" + i;
+    document.getElementById(boxId).innerText = "";
+  }
+}
 
 // function newValue
 function checkNewValue(cell){
@@ -108,7 +164,7 @@ function checkNewValue(cell){
   mapIdCellToArray(newCellId, newCellValue);
   // call check
 
-  // console.log(checkWinning(arr, player));
+  console.log(checkWinning(arr, player));
   winner = checkWinning(arr, player);
   if(winner){
     arr = [
@@ -116,10 +172,11 @@ function checkNewValue(cell){
       [-1,-1,-1],
       [-1,-1,-1]
     ]
-    //console.log("player " + player + "won the gameeeeeeeeeeeeee!");
-    document.getElementById("winner").innerText = (player == 1) ? " X" : " O";
+    console.log("player " + player + "won the gameeeeeeeeeeeeee!");
+    document.getElementById("winner").innerText = (player == 1) ? "Player X Wins!" : "Player O Wins!";
     onWin();
     clearBoard();
+    notAvailable = 0;
   }
   else if(notAvailable == 9){
     arr = [
@@ -128,9 +185,10 @@ function checkNewValue(cell){
       [-1,-1,-1]
     ]
     console.log("TiEEEEEEEEEEEEEEEEEEEEEEEEE");
-    // document.getElementById("won-text").innerText = "Tie!"
+    document.getElementById("winner").innerText = "Cool Draw!";
     onWin();
     clearBoard();
+    notAvailable = 0;
   }
   player = (player == 1) ? 0 : 1;
 
@@ -138,28 +196,5 @@ function checkNewValue(cell){
 
 }
 
-function mapIdCellToArray(cellId, cellValue){
-  // cell value not null
-  if(cellValue != ""){
-    var arrValue = (cellValue == "X")? 1 : 0;
-    var cellI = parseInt(cellId / 3);
-    var cellJ = parseInt(cellId % 3);
-    // console.log(arrValue + " ij: " + cellI + " " + cellJ);
-    arr[cellI][cellJ] = arrValue;
-    // for(var i = 0; i < 3; i++){
-    //   for(var j = 0; j < 3; j++){
-    //     console.log(i + "," + j + ": "+ arr[i][j] + " ");
-    //   }
-    //   console.log();
-    // }
-    // console.log("***********************************");
-  }
-}
 
-function clearBoard(){
-  for(var i = 1; i <= 9; i++){
-    var boxId = "box" + i;
-    document.getElementById(boxId).innerText = "";
-  }
-}
 
