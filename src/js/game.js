@@ -5,9 +5,6 @@ oTurn = document.getElementById("Oturn");
 
 // if x --> 1, if o --> 0
 var player;
-
-// count busy cells
-var notAvailable = 0;
 var arr = [
   [-1,-1,-1],
   [-1,-1,-1],
@@ -32,15 +29,15 @@ function playArea(cell) {
     document.getElementById(cell.id).innerHTML = "X";
     xTurn.classList.remove("active");
     oTurn.classList.add("active");
-  } else if (
-    !xTurn.classList.contains("active") == true &&
-    Val.innerHTML == ""
-  ) {
+    checkNewValue(cell);
+  } 
+  else if (!xTurn.classList.contains("active") == true && Val.innerHTML == "") {
     document.getElementById(cell.id).innerHTML = "O";
     oTurn.classList.remove("active");
     xTurn.classList.add("active");
+    checkNewValue(cell);
   }
-  checkNewValue(cell);
+  
 }
 
 function onX() {
@@ -129,13 +126,29 @@ function checkWinning(arr, player){
   return false;
 }
 
+//counting not available cells
+function notAvailable(){
+  var countUnAvailable = 0;
+  for(var row = 0; row < 3; row++){
+    for(var col = 0; col < 3; col++){
+      if(arr[row][col] != -1){
+        countUnAvailable++;
+      }
+    }
+  }
+  return countUnAvailable;
+}
+
+//handled this notAvailable count with clicks
+
+//mark the cell input with the global board array
 function mapIdCellToArray(cellId, cellValue){
   // cell value not null
   if(cellValue != ""){
     var arrValue = (cellValue == "X")? 1 : 0;
     var cellI = parseInt(cellId / 3);
     var cellJ = parseInt(cellId % 3);
-    console.log(arrValue + " ij: " + cellI + " " + cellJ);
+    // console.log(arrValue + " ij: " + cellI + " " + cellJ);
     arr[cellI][cellJ] = arrValue;
     for(var i = 0; i < 3; i++){
       for(var j = 0; j < 3; j++){
@@ -156,18 +169,22 @@ function clearBoard(){
 
 // function newValue
 function checkNewValue(cell){
-  notAvailable++;
   var newCellValue = cell.textContent;
   var newCellId = parseInt(cell.id.substring(3)) - 1;
   var winner;
+  console.log("player is " + player);
   // console.log(newCellValue + " " + newCellId);
 
   // call mapping function
   mapIdCellToArray(newCellId, newCellValue);
-  // call check
 
+  // count unavailble cells
+  var notAvailableCells = notAvailable();
+
+  // call checkWinning function
   console.log(checkWinning(arr, player));
   winner = checkWinning(arr, player);
+  
   if(winner){
     arr = [
       [-1,-1,-1],
@@ -175,12 +192,14 @@ function checkNewValue(cell){
       [-1,-1,-1]
     ]
     console.log("player " + player + "won the gameeeeeeeeeeeeee!");
+
+    // setting the result box value
     document.getElementById("winner").innerText = (player == 1) ? "Player X Wins!" : "Player O Wins!";
     onWin();
     clearBoard();
-    notAvailable = 0;
+    // player = (player == 1) ? 0 : 1;
   }
-  else if(notAvailable == 9){
+  else if(notAvailableCells == 9){
     arr = [
       [-1,-1,-1],
       [-1,-1,-1],
@@ -190,7 +209,7 @@ function checkNewValue(cell){
     document.getElementById("winner").innerText = "Cool Draw!";
     onWin();
     clearBoard();
-    notAvailable = 0;
+    
   }
   player = (player == 1) ? 0 : 1;
 
