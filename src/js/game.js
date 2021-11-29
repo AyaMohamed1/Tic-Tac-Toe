@@ -5,6 +5,8 @@ oTurn = document.getElementById("Oturn");
 
 // if x --> 1, if o --> 0
 var player;
+var ai;
+var human;
 var arr = [
   [-1,-1,-1],
   [-1,-1,-1],
@@ -15,13 +17,18 @@ function playerX() {
   selectBox.classList.add("hide");
   playBoard.classList.add("show");
   xTurn.classList.add("active");
-  player = 1;
+  human = 1; // x
+  ai = 0;   // o
+  player = human;
 }
 function playerY() {
   selectBox.classList.add("hide");
   playBoard.classList.add("show");
   oTurn.classList.add("active");
-  player = 0;
+  human = 0;
+  ai = 1;
+  player = ai;
+  bestMoveAi();
 }
 function playArea(cell) {
   var Val = document.getElementById(cell.id);
@@ -38,6 +45,153 @@ function playArea(cell) {
     checkNewValue(cell);
   }
   
+}
+
+function playAreaAI(cell) {
+  if(player == human){
+    console.log("hello human!" + player);
+    var Val = document.getElementById(cell.id);
+    if (xTurn.classList.contains("active") == true && Val.innerHTML == "") {
+      document.getElementById(cell.id).innerHTML = "X";
+
+    } 
+    else if (!xTurn.classList.contains("active") == true && Val.innerHTML == "") {
+      document.getElementById(cell.id).innerHTML = "O";
+    }
+    checkNewValue(cell);
+    player = ai;
+    bestMoveAi();
+  }
+  // else
+  //   bestMoveAi();
+}
+
+function putOnBoard(cellRow, cellCol, ai){
+  var symbolBoard = (ai) ? "X" : "O";
+  var boxIndex = (cellRow * 3 + cellCol) + 1;
+  var boxId = "box" + boxIndex;
+  document.getElementById(boxId).innerText = symbolBoard;
+
+  var notAvailableCells = notAvailable();
+  console.log(checkWinning(arr, ai));
+  var winnerAI = checkWinning(arr, ai);
+  
+  if(winnerAI){
+    for(var row = 0; row < 3; row++){
+      for(var col = 0; col < 3; col++){
+        console.log(row + ", " + col+ " : " + arr[row][col]);
+      }
+    }
+    arr = [
+      [-1,-1,-1],
+      [-1,-1,-1],
+      [-1,-1,-1]
+    ]
+    console.log("player " + ai + "won the gameeeeeeeeeeeeee!");
+
+    // setting the result box value
+    document.getElementById("winner").innerText = (ai == 1) ? "Player X Wins!" : "Player O Wins!";
+    onWin();
+    clearBoard();
+    // player = (player == 1) ? 0 : 1;
+  }
+  else if(notAvailableCells == 9){
+    arr = [
+      [-1,-1,-1],
+      [-1,-1,-1],
+      [-1,-1,-1]
+    ]
+    console.log("TiEEEEEEEEEEEEEEEEEEEEEEEEE");
+    document.getElementById("winner").innerText = "Cool Draw!";
+    onWin();
+    clearBoard();
+    
+  }
+  // player = human;
+
+}
+
+function bestMoveAi(){
+  console.log("hello  from best move!");
+  var bestScore = -Infinity;
+  var chosenCell;
+  var cellRow;
+  var cellCol;
+  var isMaximizing;
+  for(var row = 0; row < 3; row++){
+    for(var col = 0; col < 3; col++){
+      if(arr[row][col] == -1){
+        arr[row][col] = ai;
+        //edited
+        isMaximizing = (ai) ? true : false;
+        var score = minimax(arr, 0, isMaximizing);
+        arr[row][col] = -1;
+        if(score > bestScore){
+          bestScore = score;
+          chosenCell = {row, col};
+        }
+      }
+
+    }
+  }
+  cellRow = chosenCell.row;
+  cellCol = chosenCell.col;
+  arr[cellRow][cellCol] = ai;
+  putOnBoard(cellRow, cellCol, ai);
+
+  player = human;
+  for(var row = 0; row < 3; row++){
+    for(var col = 0; col < 3; col++){
+      console.log(row + ", " + col+ " : " + arr[row][col]);
+    }
+  }
+}
+
+
+function minimax(arr, depth, isMaximizing){
+  var notAvailableCells = notAvailable();
+  if(checkWinning(arr, human)){
+    return -10;
+  }
+  else if(checkWinning(arr, ai)){
+    return 10;
+  }
+  else if(notAvailableCells == 9){
+    return 0;
+  }
+
+  if(isMaximizing){
+    var bestScore = -Infinity;
+    for(var row = 0; row < 3; row++){
+      for(var col = 0; col < 3; col++){
+        if(arr[row][col] == -1){
+          //and here
+          arr[row][col] = 0;
+          var score = minimax(arr, depth + 1, false);
+          arr[row][col] = -1;
+          bestScore = Math.max(score, bestScore);
+        }
+      }
+    }
+
+    return bestScore;
+  }
+  else{
+    var bestScore = Infinity;
+    for(var row = 0; row < 3; row++){
+      for(var col = 0; col < 3; col++){
+        if(arr[row][col] == -1){
+          //and here
+          arr[row][col] = 1;
+          var score = minimax(arr, depth + 1, true);
+          arr[row][col] = -1;
+          bestScore = Math.min(score, bestScore);
+        }
+      }
+    }
+    return bestScore;
+  }
+
 }
 
 function onX() {
@@ -216,6 +370,8 @@ function checkNewValue(cell){
 
 
 }
+
+
 
 
 
