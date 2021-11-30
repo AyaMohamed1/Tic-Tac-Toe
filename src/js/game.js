@@ -21,7 +21,7 @@ function playerX() {
   ai = 0;   // o
   player = human;
 }
-function playerY() {
+function playerO() {
   selectBox.classList.add("hide");
   playBoard.classList.add("show");
   oTurn.classList.add("active");
