@@ -29,8 +29,10 @@ function playerY() {
   ai = 1;
   player = ai;
   bestMoveAi();
+  console.log("here")
 }
 function playArea(cell) {
+  aIModeActivated = false;
   var Val = document.getElementById(cell.id);
   if (xTurn.classList.contains("active") == true && Val.innerHTML == "") {
     document.getElementById(cell.id).innerHTML = "X";
@@ -48,63 +50,114 @@ function playArea(cell) {
 }
 
 function playAreaAI(cell) {
+  console.log(notAvailable() +"hhhhhhhhhhhhhhhhhhhhhhhh")
   if(player == human){
     console.log("hello human!" + player);
     var Val = document.getElementById(cell.id);
-    if (xTurn.classList.contains("active") == true && Val.innerHTML == "") {
-      document.getElementById(cell.id).innerHTML = "X";
+    if(Val.innerHTML == ""){
+      if (xTurn.classList.contains("active") == true) {
+        document.getElementById(cell.id).innerHTML = "X";
 
-    } 
-    else if (!xTurn.classList.contains("active") == true && Val.innerHTML == "") {
-      document.getElementById(cell.id).innerHTML = "O";
+      } 
+      // else if (!xTurn.classList.contains("active") == true && Val.innerHTML == "") {
+      //   document.getElementById(cell.id).innerHTML = "O";
+      // }
+      checkNewValue(cell);
+        player = ai;
+        bestMoveAi();
+      
     }
-    checkNewValue(cell);
-    player = ai;
-    bestMoveAi();
+    // else
+    //   bestMoveAi();
   }
-  // else
-  //   bestMoveAi();
+}
+
+function putFirstOBoard(ai){
+  var firstRow;
+  var firstCol;
+  for(var row = 0; row < 3; row++){
+    for(var col = 0; col < 3; col++){
+      if(arr[row][col] == ai){
+        firstRow = row;
+        firstCol = col;
+        console.log(firstRow + "*******" + firstCol);
+      }
+    }
+  }
+  var symbolBoard = (ai) ? "X" : "O";
+  var boxIndex = (firstRow * 3 + firstCol) + 1;
+  var newBoxId = "box" + boxIndex;
+  console.log(newBoxId)
+  if(newBoxId)
+    document.getElementById(newBoxId).innerText = symbolBoard;
 }
 
 function putOnBoard(cellRow, cellCol, ai){
-  var symbolBoard = (ai) ? "X" : "O";
-  var boxIndex = (cellRow * 3 + cellCol) + 1;
-  var boxId = "box" + boxIndex;
-  document.getElementById(boxId).innerText = symbolBoard;
+  console.log("not availabe isssssssssssssssss " + notAvailable())
+  if(notAvailable() != 1){
+    var symbolBoard = (ai) ? "X" : "O";
+    var boxIndex = (cellRow * 3 + cellCol) + 1;
+    var boxId = "box" + boxIndex;
 
-  var notAvailableCells = notAvailable();
-  console.log(checkWinning(arr, ai));
-  var winnerAI = checkWinning(arr, ai);
-  
-  if(winnerAI){
-    for(var row = 0; row < 3; row++){
-      for(var col = 0; col < 3; col++){
-        console.log(row + ", " + col+ " : " + arr[row][col]);
-      }
+    async function aiPlay() { 
+      console.log('start timer'); 
+      await new Promise(resolve => setTimeout(resolve, 500)); 
+      document.getElementById(boxId).innerText = symbolBoard;
     }
-    arr = [
-      [-1,-1,-1],
-      [-1,-1,-1],
-      [-1,-1,-1]
-    ]
-    console.log("player " + ai + "won the gameeeeeeeeeeeeee!");
+    aiPlay(); 
+  
 
-    // setting the result box value
-    document.getElementById("winner").innerText = (ai == 1) ? "Player X Wins!" : "Player O Wins!";
-    onWin();
-    clearBoard();
-    // player = (player == 1) ? 0 : 1;
-  }
-  else if(notAvailableCells == 9){
-    arr = [
-      [-1,-1,-1],
-      [-1,-1,-1],
-      [-1,-1,-1]
-    ]
-    console.log("TiEEEEEEEEEEEEEEEEEEEEEEEEE");
-    document.getElementById("winner").innerText = "Cool Draw!";
-    onWin();
-    clearBoard();
+    // want to see if ai won, i will need it if ai play first
+    var notAvailableCells = notAvailable();
+    console.log(checkWinning(arr, ai));
+    var winnerAI = checkWinning(arr, ai);
+    
+    if(winnerAI){
+      for(var row = 0; row < 3; row++){
+        for(var col = 0; col < 3; col++){
+          console.log(row + ", " + col+ " : " + arr[row][col]);
+        }
+      }
+      arr = [
+        [-1,-1,-1],
+        [-1,-1,-1],
+        [-1,-1,-1]
+      ]
+      console.log("player " + ai + "won the gameeeeeeeeeeeeee!");
+
+      // setting the result box value
+      async function aiPlayWin() { 
+        console.log('start timer'); 
+        await new Promise(resolve => setTimeout(resolve, 1000)); 
+        document.getElementById("winner").innerText = (ai == 1) ? "Player X Wins!" : "Player O Wins!";
+        onWin();
+        clearBoard();
+        console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%clear%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+      }
+      aiPlayWin(); 
+      
+      // player = (player == 1) ? 0 : 1;
+    }
+    else if(notAvailableCells == 9){
+      arr = [
+        [-1,-1,-1],
+        [-1,-1,-1],
+        [-1,-1,-1]
+      ]
+      // edit in this bta3a
+      console.log("TiEEEEEEEEEEEEEEEEEEEEEEEEE");
+      async function aiPlayDraw() { 
+        console.log('start timer'); 
+        await new Promise(resolve => setTimeout(resolve, 1000)); 
+        document.getElementById("winner").innerText = "Cool Draw!";
+        onWin();
+        clearBoard();
+        console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%clearDraw%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+      }
+      aiPlayDraw(); 
+      
+    
+    }
     
   }
   // player = human;
@@ -121,7 +174,7 @@ function bestMoveAi(){
   for(var row = 0; row < 3; row++){
     for(var col = 0; col < 3; col++){
       if(arr[row][col] == -1){
-        arr[row][col] = ai;
+        arr[row][col] = ai; // put O == 0
         //edited
         isMaximizing = (ai) ? true : false;
         var score = minimax(arr, 0, isMaximizing);
@@ -137,9 +190,14 @@ function bestMoveAi(){
   cellRow = chosenCell.row;
   cellCol = chosenCell.col;
   arr[cellRow][cellCol] = ai;
-  putOnBoard(cellRow, cellCol, ai);
+  if(notAvailable != 0){
+    putOnBoard(cellRow, cellCol, ai);
+  }
 
+  // change player turn
   player = human;
+
+  // print
   for(var row = 0; row < 3; row++){
     for(var col = 0; col < 3; col++){
       console.log(row + ", " + col+ " : " + arr[row][col]);
@@ -319,6 +377,9 @@ function clearBoard(){
     var boxId = "box" + i;
     document.getElementById(boxId).innerText = "";
   }
+  if(notAvailable() == 1){
+    putFirstOBoard(ai);
+  }
 }
 
 // function newValue
@@ -348,9 +409,15 @@ function checkNewValue(cell){
     console.log("player " + player + "won the gameeeeeeeeeeeeee!");
 
     // setting the result box value
-    document.getElementById("winner").innerText = (player == 1) ? "Player X Wins!" : "Player O Wins!";
-    onWin();
-    clearBoard();
+    async function PlayerWin() { 
+      console.log('start timer'); 
+      await new Promise(resolve => setTimeout(resolve, 1000)); 
+      document.getElementById("winner").innerText = (player == 1) ? "Player X Wins!" : "Player O Wins!";
+      onWin();
+      clearBoard();
+      console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%player%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+    }
+    PlayerWin(); 
     // player = (player == 1) ? 0 : 1;
   }
   else if(notAvailableCells == 9){
@@ -360,13 +427,19 @@ function checkNewValue(cell){
       [-1,-1,-1]
     ]
     console.log("TiEEEEEEEEEEEEEEEEEEEEEEEEE");
-    document.getElementById("winner").innerText = "Cool Draw!";
-    onWin();
-    clearBoard();
+    async function PlayerDraw() { 
+      console.log('start timer'); 
+      await new Promise(resolve => setTimeout(resolve, 1000)); 
+      document.getElementById("winner").innerText = "Cool Draw!";
+      onWin();
+      clearBoard();
+      console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%playerDraw%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+    }
+    PlayerDraw(); 
+    
     
   }
   player = (player == 1) ? 0 : 1;
-
 
 
 }
