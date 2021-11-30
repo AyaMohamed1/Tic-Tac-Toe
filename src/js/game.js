@@ -5,34 +5,40 @@ oTurn = document.getElementById("Oturn");
 
 // if x --> 1, if o --> 0
 var player;
-var ai;
-var human;
+var ai = 0;
+var human = 1;
+var aiMode = false;
 var arr = [
   [-1,-1,-1],
   [-1,-1,-1],
   [-1,-1,-1]
 ]
 
-function playerX() {
+function modeChosen(cell){
+  if(aiMode){
+    playAreaAI(cell);
+  }
+  else{
+    playArea(cell);
+  }
+}
+
+// intialization
+function single() {
   selectBox.classList.add("hide");
   playBoard.classList.add("show");
   xTurn.classList.add("active");
-  human = 1; // x
-  ai = 0;   // o
   player = human;
+  aiMode = true;
 }
-function playerO() {
+function multi() {
   selectBox.classList.add("hide");
   playBoard.classList.add("show");
-  oTurn.classList.add("active");
-  human = 0;
-  ai = 1;
-  player = ai;
-  bestMoveAi();
-  console.log("here")
+  xTurn.classList.add("active");
+  player = 1;
+  aiMode = false;
 }
 function playArea(cell) {
-  aIModeActivated = false;
   var Val = document.getElementById(cell.id);
   if (xTurn.classList.contains("active") == true && Val.innerHTML == "") {
     document.getElementById(cell.id).innerHTML = "X";
@@ -50,25 +56,17 @@ function playArea(cell) {
 }
 
 function playAreaAI(cell) {
-  console.log(notAvailable() +"hhhhhhhhhhhhhhhhhhhhhhhh")
   if(player == human){
-    console.log("hello human!" + player);
     var Val = document.getElementById(cell.id);
     if(Val.innerHTML == ""){
       if (xTurn.classList.contains("active") == true) {
         document.getElementById(cell.id).innerHTML = "X";
 
       } 
-      // else if (!xTurn.classList.contains("active") == true && Val.innerHTML == "") {
-      //   document.getElementById(cell.id).innerHTML = "O";
-      // }
       checkNewValue(cell);
         player = ai;
-        bestMoveAi();
-      
+        bestMoveAi(); 
     }
-    // else
-    //   bestMoveAi();
   }
 }
 
@@ -80,7 +78,6 @@ function putFirstOBoard(ai){
       if(arr[row][col] == ai){
         firstRow = row;
         firstCol = col;
-        console.log(firstRow + "*******" + firstCol);
       }
     }
   }
@@ -93,23 +90,39 @@ function putFirstOBoard(ai){
 }
 
 function putOnBoard(cellRow, cellCol, ai){
-  console.log("not availabe isssssssssssssssss " + notAvailable())
   if(notAvailable() != 1){
     var symbolBoard = (ai) ? "X" : "O";
     var boxIndex = (cellRow * 3 + cellCol) + 1;
     var boxId = "box" + boxIndex;
 
+    if(!player){
+      xTurn.classList.remove("active");
+      oTurn.classList.add("active");
+    }
+    else{
+      oTurn.classList.remove("active");
+      xTurn.classList.add("active");
+    }
+    
     async function aiPlay() { 
-      console.log('start timer'); 
-      await new Promise(resolve => setTimeout(resolve, 500)); 
+      console.log('start timer in ai play'); 
+      await new Promise(resolve => setTimeout(resolve, 1000)); 
       document.getElementById(boxId).innerText = symbolBoard;
+      if(player){
+        oTurn.classList.remove("active");
+        xTurn.classList.add("active");
+      }
+      else{
+        xTurn.classList.remove("active");
+        oTurn.classList.add("active");
+      }
     }
     aiPlay(); 
   
 
     // want to see if ai won, i will need it if ai play first
     var notAvailableCells = notAvailable();
-    console.log(checkWinning(arr, ai));
+    console.log("check for winning in playArea Ai "+checkWinning(arr, ai));
     var winnerAI = checkWinning(arr, ai);
     
     if(winnerAI){
@@ -128,7 +141,7 @@ function putOnBoard(cellRow, cellCol, ai){
       // setting the result box value
       async function aiPlayWin() { 
         console.log('start timer'); 
-        await new Promise(resolve => setTimeout(resolve, 1000)); 
+        await new Promise(resolve => setTimeout(resolve, 2000)); 
         document.getElementById("winner").innerText = (ai == 1) ? "Player X Wins!" : "Player O Wins!";
         onWin();
         clearBoard();
@@ -148,20 +161,16 @@ function putOnBoard(cellRow, cellCol, ai){
       console.log("TiEEEEEEEEEEEEEEEEEEEEEEEEE");
       async function aiPlayDraw() { 
         console.log('start timer'); 
-        await new Promise(resolve => setTimeout(resolve, 1000)); 
+        await new Promise(resolve => setTimeout(resolve, 2000)); 
         document.getElementById("winner").innerText = "Cool Draw!";
         onWin();
         clearBoard();
         console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%clearDraw%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
       }
       aiPlayDraw(); 
-      
-    
     }
     
   }
-  // player = human;
-
 }
 
 function bestMoveAi(){
@@ -278,14 +287,12 @@ function onReplay() {
 function checkWinning(arr, player){
   var count = 0;
   // case 1:: horizontal
-  // console.log("******************case1 started****************");
   for(var row = 0; row < 3; row++){
       for(var col = 0; col < 3; col++){
           
           if(arr[col][row] == player){
               count++;
           }
-          // console.log("[" + i + "][" + j + "] = " + arr[j][i] + ", count =  " + count + "*");
       }
       if(count == 3){
           return true;
@@ -293,11 +300,7 @@ function checkWinning(arr, player){
       else{
           count = 0;
       }
-      // console.log("\n");
   }
-
-  // console.log("******************case2 started****************");
-
 
   // case 2:: vertical
   for(var row = 0; row < 3; row++){
@@ -306,7 +309,6 @@ function checkWinning(arr, player){
           if(arr[row][col] == player){
               count++;
           }
-          // console.log("[" + i + "][" + j + "] = " + arr[i][j] + ", count =  " + count + "**");
       }
       if(count == 3){
           return true;
@@ -314,11 +316,7 @@ function checkWinning(arr, player){
       else{
           count = 0;
       }
-      // console.log("\n");
   }
-
-  // console.log("******************case3 started****************");
-
 
   // case 3:: diagonal
   if(arr[1][1] == player){
@@ -333,8 +331,6 @@ function checkWinning(arr, player){
           return true;
       }
   }
-
-
   return false;
 }
 
@@ -351,8 +347,6 @@ function notAvailable(){
   return countUnAvailable;
 }
 
-//handled this notAvailable count with clicks
-
 //mark the cell input with the global board array
 function mapIdCellToArray(cellId, cellValue){
   // cell value not null
@@ -360,15 +354,15 @@ function mapIdCellToArray(cellId, cellValue){
     var arrValue = (cellValue == "X")? 1 : 0;
     var cellI = parseInt(cellId / 3);
     var cellJ = parseInt(cellId % 3);
-    // console.log(arrValue + " ij: " + cellI + " " + cellJ);
     arr[cellI][cellJ] = arrValue;
+    console.log("in mapping");
     for(var i = 0; i < 3; i++){
       for(var j = 0; j < 3; j++){
         console.log(i + "," + j + ": "+ arr[i][j] + " ");
       }
       console.log();
     }
-    console.log("***********************************");
+    console.log("*****************mapping finished******************");
   }
 }
 
@@ -384,11 +378,11 @@ function clearBoard(){
 
 // function newValue
 function checkNewValue(cell){
+  // debugger;
   var newCellValue = cell.textContent;
   var newCellId = parseInt(cell.id.substring(3)) - 1;
   var winner;
   console.log("player is " + player);
-  // console.log(newCellValue + " " + newCellId);
 
   // call mapping function
   mapIdCellToArray(newCellId, newCellValue);
@@ -412,7 +406,10 @@ function checkNewValue(cell){
     async function PlayerWin() { 
       console.log('start timer'); 
       await new Promise(resolve => setTimeout(resolve, 1000)); 
+      player = (aiMode) ? player : !player;
+      console.log("player inside await is " + player)
       document.getElementById("winner").innerText = (player == 1) ? "Player X Wins!" : "Player O Wins!";
+      player = (aiMode) ? player : !player;
       onWin();
       clearBoard();
       console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%player%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
@@ -436,8 +433,6 @@ function checkNewValue(cell){
       console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%playerDraw%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
     }
     PlayerDraw(); 
-    
-    
   }
   player = (player == 1) ? 0 : 1;
 

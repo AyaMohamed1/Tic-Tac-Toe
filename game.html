@@ -13,10 +13,10 @@
     <div class="select-box" id="select-box">
       <p class="header">Tic-Tac-Toe</p>
       <div class="content">
-        <p class="title">Select Player</p>
+        <p class="title">Select Mode</p>
         <div class="sides">
-          <button class="playerX" onclick="playerX()">Player X</button>
-          <button class="playerO" onclick="playerO()">Player O</button>
+          <button class="playerX" onclick="single()">Single Player</button>
+          <button class="playerO" onclick="multi()">MultiPlayers</button>
         </div>
       </div>
     </div>
@@ -32,19 +32,19 @@
       </div>
       <div class="play-area">
         <section>
-          <span id="box1" onclick="playAreaAI(this)"></span>
-          <span id="box2" onclick="playAreaAI(this)"></span>
-          <span id="box3" onclick="playAreaAI(this)"></span>
+          <span id="box1" onclick="modeChosen(this)"></span>
+          <span id="box2" onclick="modeChosen(this)"></span>
+          <span id="box3" onclick="modeChosen(this)"></span>
         </section>
         <section>
-          <span id="box4" onclick="playAreaAI(this)"></span>
-          <span id="box5" onclick="playAreaAI(this)"></span>
-          <span id="box6" onclick="playAreaAI(this)"></span>
+          <span id="box4" onclick="modeChosen(this)"></span>
+          <span id="box5" onclick="modeChosen(this)"></span>
+          <span id="box6" onclick="modeChosen(this)"></span>
         </section>
         <section>
-          <span id="box7" onclick="playAreaAI(this)"></span>
-          <span id="box8" onclick="playAreaAI(this)"></span>
-          <span id="box9" onclick="playAreaAI(this)"></span>
+          <span id="box7" onclick="modeChosen(this)"></span>
+          <span id="box8" onclick="modeChosen(this)"></span>
+          <span id="box9" onclick="modeChosen(this)"></span>
         </section>
       </div>
     </div>
