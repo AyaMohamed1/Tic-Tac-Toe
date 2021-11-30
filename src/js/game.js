@@ -25,29 +25,44 @@ function modeChosen(cell){
 
 // intialization
 function single() {
-  selectBox.classList.add("hide");
-  playBoard.classList.add("show");
-  xTurn.classList.add("active");
-  player = human;
-  aiMode = true;
+  new Audio("src/soundEffects/select.wav").play();
+
+  async function selectSingle() { 
+    await new Promise(resolve => setTimeout(resolve, 400)); 
+    selectBox.classList.add("hide");
+    playBoard.classList.add("show");
+    xTurn.classList.add("active");
+    player = human;
+    aiMode = true;
+  }
+  selectSingle(); 
 }
 function multi() {
-  selectBox.classList.add("hide");
-  playBoard.classList.add("show");
-  xTurn.classList.add("active");
-  player = 1;
-  aiMode = false;
+  new Audio("src/soundEffects/select.wav").play();
+  async function selectMulti() { 
+    await new Promise(resolve => setTimeout(resolve, 400)); 
+    selectBox.classList.add("hide");
+    playBoard.classList.add("show");
+    xTurn.classList.add("active");
+    player = 1;
+    aiMode = false;
+  }
+  selectMulti();
 }
 function playArea(cell) {
   var Val = document.getElementById(cell.id);
   if (xTurn.classList.contains("active") == true && Val.innerHTML == "") {
     document.getElementById(cell.id).innerHTML = "X";
+    //adding x sound effect
+    new Audio("src/soundEffects/xClick.wav").play();
     xTurn.classList.remove("active");
     oTurn.classList.add("active");
     checkNewValue(cell);
   } 
   else if (!xTurn.classList.contains("active") == true && Val.innerHTML == "") {
     document.getElementById(cell.id).innerHTML = "O";
+    //adding o sound effect --> change it later
+    new Audio("src/soundEffects/oClick.mp3").play();
     oTurn.classList.remove("active");
     xTurn.classList.add("active");
     checkNewValue(cell);
@@ -61,6 +76,7 @@ function playAreaAI(cell) {
     if(Val.innerHTML == ""){
       if (xTurn.classList.contains("active") == true) {
         document.getElementById(cell.id).innerHTML = "X";
+        new Audio("src/soundEffects/xClick.wav").play();
 
       } 
       checkNewValue(cell);
@@ -87,6 +103,7 @@ function putFirstOBoard(ai){
   console.log(newBoxId)
   if(newBoxId)
     document.getElementById(newBoxId).innerText = symbolBoard;
+    new Audio("src/soundEffects/aiClick.wav").play();
 }
 
 function putOnBoard(cellRow, cellCol, ai){
@@ -108,6 +125,7 @@ function putOnBoard(cellRow, cellCol, ai){
       console.log('start timer in ai play'); 
       await new Promise(resolve => setTimeout(resolve, 1000)); 
       document.getElementById(boxId).innerText = symbolBoard;
+      new Audio("src/soundEffects/aiClick.wav").play();
       if(player){
         oTurn.classList.remove("active");
         xTurn.classList.add("active");
@@ -143,6 +161,8 @@ function putOnBoard(cellRow, cellCol, ai){
         console.log('start timer'); 
         await new Promise(resolve => setTimeout(resolve, 2000)); 
         document.getElementById("winner").innerText = (ai == 1) ? "Player X Wins!" : "Player O Wins!";
+        var soundEffect = (player) ? "loser.wav" : "winner.wav";
+        new Audio(`src/soundEffects/${soundEffect}`).play();
         onWin();
         clearBoard();
         console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%clear%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
@@ -163,6 +183,7 @@ function putOnBoard(cellRow, cellCol, ai){
         console.log('start timer'); 
         await new Promise(resolve => setTimeout(resolve, 2000)); 
         document.getElementById("winner").innerText = "Cool Draw!";
+        new Audio("src/soundEffects/draw.wav").play();
         onWin();
         clearBoard();
         console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%clearDraw%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
@@ -409,6 +430,13 @@ function checkNewValue(cell){
       player = (aiMode) ? player : !player;
       console.log("player inside await is " + player)
       document.getElementById("winner").innerText = (player == 1) ? "Player X Wins!" : "Player O Wins!";
+      if(aiMode){
+        var soundEffect = (player) ? "loser.wav" : "winner.wav";
+        new Audio(`src/soundEffects/${soundEffect}`).play();
+      }
+      else{
+        new Audio("src/soundEffects/winner.wav").play();
+      }
       player = (aiMode) ? player : !player;
       onWin();
       clearBoard();
@@ -428,6 +456,7 @@ function checkNewValue(cell){
       console.log('start timer'); 
       await new Promise(resolve => setTimeout(resolve, 1000)); 
       document.getElementById("winner").innerText = "Cool Draw!";
+      new Audio("src/soundEffects/draw.wav").play();
       onWin();
       clearBoard();
       console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%playerDraw%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
